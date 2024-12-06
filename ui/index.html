@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My FigJam Plugin</title>
+  <style>
+    body {
+      font-family: Poppins, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      position: relative;
+    }
+    textarea {
+      width: 100%;
+      height: 100%;
+      box-sizing: border-box;
+      padding: 24px;
+      font-size: 16px;
+      border: none;
+      background-color: #ececec;
+      font-family: Poppins, sans-serif;
+      resize: none;
+    }
+    textarea:focus {
+      outline: none;
+    }
+    a {
+      font-size: 12px;
+      font-weight: 400;
+      font-family: Poppins, sans-serif;
+      color: #909090;
+      text-align: center;
+    }
+    .floating-div {
+      position: absolute;
+      bottom: 8px;
+      background-color: rgba(255, 255, 255, 0.8);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      border-radius: 10px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      width: calc(95% - 32px);
+    }
+    .selector-container {
+      display: flex;
+      gap: 8px;
+    }
+    .selector-container button {
+      border: 1px solid #666666;
+      color: #666666;
+      background-color: #fff;
+      padding: 16px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      flex: 1;
+      font-size: 16px;
+      font-weight: 400;
+      font-family: Poppins, sans-serif;
+    }
+
+    .selector-container button:hover {
+      background-color: #f0f0f0;
+    }
+
+    .selector-container button.active {
+      background-color: #3e3e3e;
+      color: #fff;
+    }
+
+    #create {
+      border: none;
+      color: #fff;
+      background-color: #8c00ff;
+      padding: 16px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      flex: 1;
+      font-size: 16px;
+      font-weight: 700;
+      font-family: Poppins, sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <textarea placeholder="Type your bullet points here. Each new line creates a new sticky, square, or section."></textarea>
+  <div class="floating-div">
+    <div class="selector-container">
+      <button id="sticky">Stickies</button>
+      <button id="square">Squares</button>
+      <button id="section">Sections</button>
+    </div>
+    <button id="create">Create</button>
+    <a href="" target="_blank">Tips and recommendations</a>
+  </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const buttonGroup = document.querySelector('.selector-container');
+      const buttons = buttonGroup.querySelectorAll('button');
+      const createButton = document.getElementById('create');
+      const textArea = document.querySelector('textarea');
+
+      const defaultButton = document.getElementById('sticky');
+      defaultButton.classList.add('active');
+      buttonGroup.setAttribute('data-selected', defaultButton.id);
+
+      buttons.forEach(button => {
+        button.addEventListener('click', () => {
+          buttons.forEach(btn => btn.classList.remove('active'));
+          button.classList.add('active');
+          buttonGroup.setAttribute('data-selected', button.id);
+        });
+      });
+
+      createButton.addEventListener('click', () => {
+        const selected = buttonGroup.getAttribute('data-selected');
+        const bulletPoints = textArea.value.split('\n')
+          .map(line => line.trim().replace(/^[-•]\s*/, ''))
+          .filter(line => line !== '');
+
+        parent.postMessage({ pluginMessage: { type: 'create-elements', selected, bulletPoints } }, '*');
+      });
+    });
+  </script>
+</body>
+</html>

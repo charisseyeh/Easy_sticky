@@ -1,0 +1,8 @@
+{
+  "name": "SquaresMaker",
+  "id": "squares-maker",
+  "api": "1.0.0",
+  "main": "src/main.js",
+  "ui": "ui/index.html",
+  "editorType": ["figjam"]
+}
