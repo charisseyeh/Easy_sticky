@@ -94,6 +94,10 @@
       <button id="square">Squares</button>
       <button id="section">Sections</button>
     </div>
+    <div class="selector-container">
+      <button id="horizontal" class="layout-btn active">Horizontal</button>
+      <button id="vertical" class="layout-btn">Vertical</button>
+    </div>
     <button id="create">Create</button>
     <a href="" target="_blank">Tips and recommendations</a>
   </div>
@@ -116,13 +120,31 @@
         });
       });
 
+      const layoutButtons = document.querySelectorAll('.layout-btn');
+      let currentLayout = 'horizontal';
+
+      layoutButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          layoutButtons.forEach(btn => btn.classList.remove('active'));
+          button.classList.add('active');
+          currentLayout = button.id;
+        });
+      });
+
       createButton.addEventListener('click', () => {
         const selected = buttonGroup.getAttribute('data-selected');
         const bulletPoints = textArea.value.split('\n')
           .map(line => line.trim().replace(/^[-•]\s*/, ''))
           .filter(line => line !== '');
 
-        parent.postMessage({ pluginMessage: { type: 'create-elements', selected, bulletPoints } }, '*');
+        parent.postMessage({ 
+          pluginMessage: { 
+            type: 'create-elements', 
+            selected, 
+            bulletPoints,
+            layout: currentLayout 
+          } 
+        }, '*');
       });
     });
   </script>

@@ -3,7 +3,7 @@ figma.showUI(__html__, { width: 400, height: 500 });
 
 figma.ui.onmessage = async (msg) => {
     if (msg.type === 'create-elements') {
-        const { selected, bulletPoints } = msg;
+        const { selected, bulletPoints, layout } = msg;
         await figma.loadFontAsync({ family: "Inter", style: "Medium" });
 
         const nodes = figma.currentPage.children;
@@ -14,8 +14,12 @@ figma.ui.onmessage = async (msg) => {
         });  
 
         bulletPoints.forEach((text, index) => {
-            const x = 100;
-            const y = 100 + index * 150;
+            const spacing = 150;
+            const baseX = 100;
+            const baseY = 100;
+            const x = layout === 'horizontal' ? baseX + index * spacing : baseX;
+            const y = layout === 'vertical' ? baseY + index * spacing : baseY;
+
             switch (selected) {
                 case 'sticky':
                     const sticky = figma.createSticky();
