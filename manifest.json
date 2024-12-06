@@ -1,8 +1,12 @@
 {
   "name": "SquaresMaker",
-  "id": "squares-maker",
+  "id": "1446963054594793178",
   "api": "1.0.0",
   "main": "src/main.js",
   "ui": "ui/index.html",
-  "editorType": ["figjam"]
+  "editorType": ["figjam"],
+  "documentAccess": "dynamic-page",
+  "networkAccess": {
+    "allowedDomains": ["none"]
+  }
 }

@@ -8,41 +8,45 @@ figma.ui.onmessage = async (msg) => {
 
         const nodes = figma.currentPage.children;
 
-        nodes.forEach(node => {
-          const { id, name, type, x, y } = node;
-          console.log(`Node ID: ${id}, Name: ${name}, Type: ${type}, x: ${x}, y: ${y}`);
-        });  
+        try {
+            bulletPoints.forEach((text, index) => {
+                if (!text) return; // Skip empty texts
 
-        bulletPoints.forEach((text, index) => {
-            const spacing = 150;
-            const baseX = 100;
-            const baseY = 100;
-            const x = layout === 'horizontal' ? baseX + index * spacing : baseX;
-            const y = layout === 'vertical' ? baseY + index * spacing : baseY;
+                const spacing = 150;
+                const baseX = 100;
+                const baseY = 100;
+                const x = layout === 'horizontal' ? baseX + index * spacing : baseX;
+                const y = layout === 'vertical' ? baseY + index * spacing : baseY;
 
-            switch (selected) {
-                case 'sticky':
-                    const sticky = figma.createSticky();
-                    sticky.x = x;
-                    sticky.y = y;
-                    sticky.text.characters = text;
-                    break;
-                case 'square':
-                    const shape = figma.createShapeWithText();
-                    shape.shapeType = 'SQUARE';
-                    shape.x = x;
-                    shape.y = y;
-                    shape.text.characters = text;
-                    break;
-                case 'section':
-                    const section = figma.createSection();
-                    section.x = x;
-                    section.y = y;
-                    section.name = text;
-                    break;
-                default:
-                    console.error('Unknown type selected');
+                switch (selected) {
+                    case 'sticky':
+                        const sticky = figma.createSticky();
+                        sticky.x = x;
+                        sticky.y = y;
+                        sticky.text.characters = text;
+                        break;
+                    case 'square':
+                        const shape = figma.createShapeWithText();
+                        shape.shapeType = 'SQUARE';
+                        shape.x = x;
+                        shape.y = y;
+                        shape.text.characters = text;
+                        break;
+                    case 'section':
+                        const section = figma.createSection();
+                        section.x = x;
+                        section.y = y;
+                        section.name = text;
+                        break;
+                    default:
+                        figma.notify('Unknown element type selected');
+                        return;
+                }
+            });
+            figma.notify('Elements created successfully!');
+        } catch (error) {
+            figma.notify('Error creating elements: ' + error.message);
+            console.error(error);
         }
-      })
     }
-  };
+};

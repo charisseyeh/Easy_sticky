@@ -87,7 +87,10 @@
   </style>
 </head>
 <body>
-  <textarea placeholder="Type your bullet points here. Each new line creates a new sticky, square, or section."></textarea>
+  <textarea 
+    placeholder="Type your bullet points here. Each new line creates a new sticky, square, or section."
+    aria-label="Bullet points input"
+  ></textarea>
   <div class="floating-div">
     <div class="selector-container">
       <button id="sticky">Stickies</button>
@@ -99,7 +102,6 @@
       <button id="vertical" class="layout-btn">Vertical</button>
     </div>
     <button id="create">Create</button>
-    <a href="" target="_blank">Tips and recommendations</a>
   </div>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -132,10 +134,20 @@
       });
 
       createButton.addEventListener('click', () => {
+        createButton.disabled = true;
+        createButton.textContent = 'Creating...';
+        
         const selected = buttonGroup.getAttribute('data-selected');
         const bulletPoints = textArea.value.split('\n')
           .map(line => line.trim().replace(/^[-•]\s*/, ''))
           .filter(line => line !== '');
+
+        if (bulletPoints.length === 0) {
+          figma.notify('Please enter some text first');
+          createButton.disabled = false;
+          createButton.textContent = 'Create';
+          return;
+        }
 
         parent.postMessage({ 
           pluginMessage: { 
@@ -145,6 +157,12 @@
             layout: currentLayout 
           } 
         }, '*');
+
+        // Reset button after short delay
+        setTimeout(() => {
+          createButton.disabled = false;
+          createButton.textContent = 'Create';
+        }, 1000);
       });
     });
   </script>
